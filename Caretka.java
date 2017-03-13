@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class Caretka {
     public static void main(String[] d) throws FileNotFoundException, IOException {
         long start = System.currentTimeMillis();
-        BufferedReader flr = new BufferedReader(new FileReader("lng.csv"));
+        BufferedReader flr = new BufferedReader(new FileReader("Hello.txt"));
         BufferedWriter flr3 = new BufferedWriter(new FileWriter("newFile.csv"));
         Pattern pat=Pattern.compile(".*;.*;.*");
         Matcher matcher;
@@ -114,6 +114,7 @@ public class Caretka {
             theWholeAmount[bp] = ((String)it.next()).split(";");
             bp++;
         }
+        set.removeAll(set);
 
         System.out.println("TEST");
         int p=0;
@@ -126,18 +127,22 @@ public class Caretka {
                         results.add(theWholeAmount[j][0] + ";" + theWholeAmount[j][1] + ";" + theWholeAmount[j][2]);
 
                         for (int k = 0; k < size; k++) {
-                            if (!theWholeAmount[j][1].equals("\"\""))
+                            if (!theWholeAmount[j][1].equals("\"\"")) {
                                 if (theWholeAmount[j][1].equals(theWholeAmount[k][1]) & k != j) {
-                                    results.add(theWholeAmount[k][0] + ";" + theWholeAmount[k][1] + ";" + theWholeAmount[k][2]);
-                                    if(!theWholeAmount[j][2].equals(theWholeAmount[k][2]))
-                                        for (int m = 0; m < size; m++) {
-                                            if (!theWholeAmount[k][2].equals("\"\""))
-                                                if (theWholeAmount[k][2].equals(theWholeAmount[m][2]) & k != m) {
-                                                    results.add(theWholeAmount[m][0] + ";" + theWholeAmount[m][1] + ";" + theWholeAmount[m][2]);
-                                                }
+                                    if(!set.contains(theWholeAmount[j][1])) {
+                                        results.add(theWholeAmount[k][0] + ";" + theWholeAmount[k][1] + ";" + theWholeAmount[k][2]);
+                                        set.add(theWholeAmount[k][1]);
+                                        if (!theWholeAmount[j][2].equals(theWholeAmount[k][2]))
+                                            for (int m = 0; m < size; m++) {
+                                                if (!theWholeAmount[k][2].equals("\"\""))
+                                                    if (theWholeAmount[k][2].equals(theWholeAmount[m][2]) & k != m) {
+                                                        results.add(theWholeAmount[m][0] + ";" + theWholeAmount[m][1] + ";" + theWholeAmount[m][2]);
+                                                    }
 
-                                        }
+                                            }
+                                    }
                                 }
+                            }
 
                         }
 
@@ -152,31 +157,44 @@ public class Caretka {
                 }
 
             }
+        }
 
+
+        for (int i=0; i<size; i++){
             for(int j=i+1; j<size; j++) {
                 if (!theWholeAmount[j][1].equals("\"\"")) {
                     if (theWholeAmount[j][1].equals(theWholeAmount[i][1])) {
-                        results.add("Group");
-                        results.add(theWholeAmount[i][0] + ";" + theWholeAmount[i][1] + ";" + theWholeAmount[i][2]);
-                        results.add(theWholeAmount[j][0] + ";" + theWholeAmount[j][1] + ";" + theWholeAmount[j][2]);
-                        if(!theWholeAmount[j][2].equals(theWholeAmount[i][2]))
-                            for (int k = 0; k < size; k++) {
-                                if (!theWholeAmount[j][2].equals("\"\""))
-                                    if (theWholeAmount[j][2].equals(theWholeAmount[k][2]) & k != j) {
-                                        results.add(theWholeAmount[k][0] + ";" + theWholeAmount[k][1] + ";" + theWholeAmount[k][2]);
+                        if (!set.contains(theWholeAmount[j][1])) {
+                            results.add("Group");
+                            results.add(theWholeAmount[i][0] + ";" + theWholeAmount[i][1] + ";" + theWholeAmount[i][2]);
+                            results.add(theWholeAmount[j][0] + ";" + theWholeAmount[j][1] + ";" + theWholeAmount[j][2]);
+                            set.add(theWholeAmount[j][1]);
+                            if (!theWholeAmount[j][2].equals(theWholeAmount[i][2])) {
+                                for (int k = 0; k < size; k++) {
+                                    if (!theWholeAmount[j][2].equals("\"\"")) {
+                                        if (theWholeAmount[j][2].equals(theWholeAmount[k][2]) & k != j) {
+                                            results.add(theWholeAmount[k][0] + ";" + theWholeAmount[k][1] + ";" + theWholeAmount[k][2]);
+                                            set.add(theWholeAmount[k][2]);
+                                        }
                                     }
-
+                                }
                             }
+                        }
                     }
                 }
             }
+        }
 
+        for(int i=0; i<size; i++){
             for(int j=i+1; j<size; j++) {
                 if (!theWholeAmount[j][2].equals("\"\"")) {
                     if (theWholeAmount[j][2].equals(theWholeAmount[i][2])) {
-                        results.add("Group");
-                        results.add(theWholeAmount[i][0] + ";" + theWholeAmount[i][1] + ";" + theWholeAmount[i][2]);
-                        results.add(theWholeAmount[j][0] + ";" + theWholeAmount[j][1] + ";" + theWholeAmount[j][2]);
+                        if (!set.contains(theWholeAmount[j][2])) {
+                            results.add("Group");
+                            results.add(theWholeAmount[i][0] + ";" + theWholeAmount[i][1] + ";" + theWholeAmount[i][2]);
+                            results.add(theWholeAmount[j][0] + ";" + theWholeAmount[j][1] + ";" + theWholeAmount[j][2]);
+                            set.add(theWholeAmount[j][2]);
+                        }
                     }
                 }
             }
@@ -224,7 +242,7 @@ public class Caretka {
             }
         }
 
-        flr3.write("We have got " + howMuch + "elements biggern than single.\n\n");
+        flr3.write("We have got " + howMuch + " elements bigger than single.\n\n");
         for (int i=0; i<treeMap.size(); i++) {
             for (int j = finalMassive[i][0]; j < finalMassive[i][0] + finalMassive[i][1] + 1; j++){
                 if(results.get(j).equals("Group")){
@@ -234,10 +252,10 @@ public class Caretka {
             }
 
         }
-        flr3.close()
 
+        flr3.close();
+        
         long finish = System.currentTimeMillis();
-
         System.out.println(finish-start);
 
     }
