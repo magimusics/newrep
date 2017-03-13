@@ -224,7 +224,7 @@ public class Caretka {
             }
         }
 
-        flr3.write("We have got " + howMuch + "elements biggern than single.\n");
+        flr3.write("We have got " + howMuch + "elements biggern than single.\n\n");
         for (int i=0; i<treeMap.size(); i++) {
             for (int j = finalMassive[i][0]; j < finalMassive[i][0] + finalMassive[i][1] + 1; j++){
                 if(results.get(j).equals("Group")){
@@ -234,7 +234,7 @@ public class Caretka {
             }
 
         }
-
+        flr3.close()
 
         long finish = System.currentTimeMillis();
 
