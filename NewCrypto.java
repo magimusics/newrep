@@ -1,5 +1,3 @@
-package crypto;
-
 import java.io.*;
 import java.util.*;
 
@@ -16,23 +14,21 @@ public class NewCrypto {
         Map<String, ArrayList<Integer>> thirdColumn = new HashMap<>();
 
         Set<Integer> treeSet = new TreeSet<>();
-        Set<String> set = new TreeSet<>();
-        Map<Integer, Integer> treeMap = new TreeMap<>();
+        Set<String> set = new HashSet<>();
 
         ArrayList<String> results = new ArrayList<>();
         ArrayList<Integer> indexes;
         Iterator iterator;
         Queue<Integer> queue = new PriorityQueue<>();
+        Group groups;
 
-        String string;
         String[] mas;
         ArrayList<String[]> massive = new ArrayList<>();
-        ArrayList<FinalMassive> finalArray = new ArrayList<>();
-        int setSize;
+        ArrayList<FinalMassive> finalArray;
+        int setSize, howMuch;
 
         while (flr.ready()) {
-            string = (flr.readLine());
-            set.add(string);
+            set.add(flr.readLine());
         }
         flr.close();
 
@@ -146,39 +142,9 @@ public class NewCrypto {
             }
         }
 
-        long a = System.currentTimeMillis();
-
-        int p=0, howMuch=0;
-        for (int i=results.size()-1; i>=0; i--)
-        {
-            if(results.get(i).equals("Group"))
-            {
-                if(p!=0){
-                    treeMap.put(i, p);
-                    p=0;
-                }
-            }
-            else
-            {
-                p++;
-            }
-        }
-
-        for(Map.Entry<Integer,Integer> find : treeMap.entrySet()){
-            finalArray.add(new FinalMassive(find.getValue(), find.getKey()));
-        }
-
-        Collections.sort(finalArray, new Comparator<FinalMassive>() {
-            @Override
-            public int compare(FinalMassive o1, FinalMassive o2) {
-                if(o1.getKey() > o2.getKey())
-                    return -1;
-                if(o1.getKey() < o2.getKey())
-                    return 1;
-                return 0;
-            }
-        });
-
+        groups = new Group(results);
+        groups.sort();
+        finalArray = groups.getFinalArray();
         howMuch = finalArray.size();
 
         flr3.write("We have got " + howMuch + " elements bigger than single.\n\n");
@@ -296,5 +262,45 @@ class FinalMassive{
         this.key = key;
         Value = value;
     }
+}
 
+class Group{
+    private ArrayList<String> results;
+    private ArrayList<FinalMassive> finalArray = new ArrayList<>();
+    private int p = 0;
+
+    public Group(ArrayList<String> arrayList) {
+        results = arrayList;
+        for (int i=results.size()-1; i>=0; i--)
+        {
+            if(results.get(i).equals("Group"))
+            {
+                if(p!=0){
+                    finalArray.add(new FinalMassive(p, i));
+                    p=0;
+                }
+            }
+            else
+            {
+                p++;
+            }
+        }
+    }
+
+    public void sort(){
+        Collections.sort(finalArray, new Comparator<FinalMassive>() {
+            @Override
+            public int compare(FinalMassive o1, FinalMassive o2) {
+                if(o1.getKey() > o2.getKey())
+                    return -1;
+                if(o1.getKey() < o2.getKey())
+                    return 1;
+                return 0;
+            }
+        });
+    }
+
+    public ArrayList<FinalMassive> getFinalArray() {
+        return finalArray;
+    }
 }
